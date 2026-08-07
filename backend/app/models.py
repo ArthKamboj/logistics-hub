@@ -18,3 +18,10 @@ class Task(Base):
     description = Column(Text)
     assigned_to = Column(Integer, ForeignKey("users.id"))
     status = Column(String(20), default="pending")
+
+class SeminarHall(Base):
+    __tablename__ = "seminar_halls"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, index=True, nullable=False)
+    capacity = Column(Integer, nullable=False)
+    is_available = Column(Boolean, default=True)
