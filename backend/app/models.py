@@ -18,6 +18,7 @@ class Task(Base):
     description = Column(Text)
     assigned_to = Column(Integer, ForeignKey("users.id"))
     status = Column(String(20), default="pending")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class SeminarHall(Base):
     __tablename__ = "seminar_halls"
