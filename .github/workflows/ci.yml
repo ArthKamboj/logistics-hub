@@ -38,10 +38,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         
-      - name: Set up Node.js 20
+      - name: Set up Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
           
@@ -52,7 +52,6 @@ jobs:
           
       - name: Run Production Build
         env:
-          # We provide a dummy URL just so the build passes its static checks
           NEXT_PUBLIC_API_URL: http://localhost:8000
         run: |
           cd frontend
@@ -67,4 +66,4 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Build Docker Compose Stack
-        run: docker-compose build
+        run: docker compose build
