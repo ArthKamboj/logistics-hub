@@ -23,6 +23,15 @@ CREATE TABLE tasks (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE submissions (
+    id SERIAL PRIMARY KEY,
+    applicant_email VARCHAR(255) NOT NULL,
+    language VARCHAR(50) NOT NULL, -- e.g., cpp, python, java
+    object_key VARCHAR(255) UNIQUE NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending', -- pending, uploaded, evaluated
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO users (username, email, password_hash, role) VALUES 
 ('admin1', 'core1@workshop.local', 'placeholder_hash', 'admin'),
 ('admin2', 'core2@workshop.local', 'placeholder_hash', 'admin'),
