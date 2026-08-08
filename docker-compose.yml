@@ -12,7 +12,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-  
+
   minio:
     image: minio/minio:latest
     container_name: logistics_minio
@@ -21,11 +21,36 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: securepassword123
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9000:9000" 
+      - "9001:9001" 
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
+
+  backend:
+    build: ./backend
+    container_name: logistics_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://admin:securepassword123@db:5432/logistics
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=admin
+      - MINIO_SECRET_KEY=securepassword123
+      - MINIO_BUCKET_NAME=workshop-submissions
+    depends_on:
+      - db
+      - minio
+
+  frontend:
+    build: ./frontend
+    container_name: logistics_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
 
 volumes:
   pgdata:
