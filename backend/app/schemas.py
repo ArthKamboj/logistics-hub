@@ -31,3 +31,17 @@ class TaskResponse(TaskBase):
     created_at: datetime
     
     model_config = ConfigDict(from_attributes=True)
+
+class SubmissionCreate(BaseModel):
+    applicant_email: str
+    language: str
+
+class SubmissionResponse(BaseModel):
+    id: int
+    applicant_email: str
+    language: str
+    object_key: str
+    status: str
+    upload_url: Optional[str] = None
+    
+    model_config = ConfigDict(from_attributes=True)
