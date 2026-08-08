@@ -2,15 +2,24 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from app.database import engine, get_db
-from app.routers import auth, seminars, tasks 
+from app.routers import auth, seminars, tasks, submissions 
+from app.storage import ensure_bucket_exists
 from app.auth import get_current_user
 from app.models import User
 
 app = FastAPI(title="Logistics Hub API", version="1.0.0")
 
+@app.on_event("startup")
+def startup_event():
+    try:
+        ensure_bucket_exists()
+    except Exception as e:
+        print(f"Failed to initialize MinIO bucket: {e}")
+
 app.include_router(auth.router)
 app.include_router(seminars.router)
 app.include_router(tasks.router)
+app.include_router(submissions.router)
 
 @app.get("/health")
 def health_check(db: Session = Depends(get_db)):

@@ -14,7 +14,7 @@ services:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
   
   minio:
-    image: minio/minio:RELEASE.2024-01-31T20-20-41Z
+    image: minio/minio:latest
     container_name: logistics_minio
     restart: always
     environment:
@@ -29,3 +29,4 @@ services:
 
 volumes:
   pgdata:
+  minio_data:
