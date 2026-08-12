@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Text, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
 
@@ -27,6 +28,8 @@ class SeminarHall(Base):
     capacity = Column(Integer, nullable=False)
     is_available = Column(Boolean, default=True)
 
+    seminars = relationship("Seminar", back_populates="hall")
+
 class Submission(Base):
     __tablename__ = "submissions"
     id = Column(Integer, primary_key=True, index=True)
@@ -35,3 +38,20 @@ class Submission(Base):
     object_key = Column(String(255), unique=True, nullable=False)
     status = Column(String(20), default="pending")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class Seminar(Base):
+    __tablename__ = "seminars"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True, nullable=False)
+    description = Column(String, nullable=True)
+    
+    hall_id = Column(Integer, ForeignKey("seminar_halls.id"), nullable=False)
+    
+    start_time = Column(DateTime(timezone=True), nullable=False)
+    end_time = Column(DateTime(timezone=True), nullable=False)
+    
+    created_by = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    hall = relationship("SeminarHall", back_populates="seminars")

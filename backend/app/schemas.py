@@ -45,3 +45,20 @@ class SubmissionResponse(BaseModel):
     upload_url: Optional[str] = None
     
     model_config = ConfigDict(from_attributes=True)
+
+class SeminarBase(BaseModel):
+    title: str
+    description: Optional[str] = None
+    hall_id: int
+    start_time: datetime
+    end_time: datetime
+
+class SeminarCreate(SeminarBase):
+    pass
+
+class SeminarResponse(SeminarBase):
+    id: int
+    created_by: int
+    created_at: datetime
+    
+    model_config = ConfigDict(from_attributes=True)
