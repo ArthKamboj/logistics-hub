@@ -4,10 +4,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
-from app.auth import verify_password, create_access_token
+from app.auth import verify_password, create_access_token, pwd_context
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
+class UserCreate(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 12 
 
@@ -28,3 +32,34 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     )
     
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    existing_user = db.query(User).filter(User.username == user.username).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username is already taken"
+        )
+    
+    existing_email = db.query(User).filter(User.email == user.email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is already registered"
+        )
+    
+    hashed_password = pwd_context.hash(user.password)
+    
+    new_user = User(
+        username=user.username,
+        email=user.email,
+        password_hash=hashed_password,
+        role="user"
+    )
+    
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    return {"message": "User registered successfully", "user_id": new_user.id}
