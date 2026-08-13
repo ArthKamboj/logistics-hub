@@ -55,3 +55,16 @@ class Seminar(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     hall = relationship("SeminarHall", back_populates="seminars")
+
+
+class Task(Base):
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True, nullable=False)
+    description = Column(String, nullable=True)
+    
+    assigned_to = Column(Integer, ForeignKey("users.id"), nullable=True)
+    
+    status = Column(String, default="pending")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
