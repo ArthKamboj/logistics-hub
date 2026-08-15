@@ -33,10 +33,10 @@ class SeminarHall(Base):
 class Submission(Base):
     __tablename__ = "submissions"
     id = Column(Integer, primary_key=True, index=True)
-    applicant_email = Column(String(255), nullable=False)
-    language = Column(String(50), nullable=False)
-    object_key = Column(String(255), unique=True, nullable=False)
-    status = Column(String(20), default="pending")
+    applicant_email = Column(String, index=True, nullable=False)
+    language = Column(String, nullable=False)
+    object_key = Column(String, unique=True, nullable=False)
+    status = Column(String, default="pending")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Seminar(Base):

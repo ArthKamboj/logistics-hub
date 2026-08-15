@@ -1,3 +1,4 @@
+import os
 from minio import Minio
 from datetime import timedelta
 from app.config import settings
@@ -14,6 +15,7 @@ def ensure_bucket_exists():
         minio_client.make_bucket(settings.MINIO_BUCKET_NAME)
 
 def get_presigned_put_url(object_name: str) -> str:
+    ensure_bucket_exists()
     return minio_client.presigned_put_object(
         settings.MINIO_BUCKET_NAME,
         object_name,
